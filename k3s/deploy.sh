@@ -49,8 +49,13 @@ fi
 # Import images to K3s (for local development)
 echo ""
 echo "📦 Importing images to K3s..."
-sudo k3s ctr images import <(docker save node-app:latest) || echo "⚠️  Node.js image import failed"
-sudo k3s ctr images import <(docker save python-app:latest) || echo "⚠️  Python image import failed"
+docker save node-app:latest | sudo k3s ctr images import - || echo "⚠️  Node.js image import failed"
+docker save python-app:latest | sudo k3s ctr images import - || echo "⚠️  Python image import failed"
+
+# Verify images
+echo ""
+echo "Verifying imported images..."
+sudo k3s crictl images | grep -E "(node-app|python-app)" || echo "⚠️  Images not found, pods may fail to start"
 
 echo ""
 echo "📝 Deploying Kubernetes manifests..."
