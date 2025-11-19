@@ -58,11 +58,10 @@ echo "📥 Installing K3s..."
 echo ""
 
 # Install K3s with Traefik enabled
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server \
+curl -sfL https://get.k3s.io | sh -s - server \
     --disable servicelb \
     --write-kubeconfig-mode 644 \
-    --kube-apiserver-arg enable-admission-plugins=NodeRestriction,PodSecurityPolicy \
-    --node-label node.kubernetes.io/type=edge" sh -
+    --node-label node.kubernetes.io/type=edge
 
 echo ""
 echo "⏳ Waiting for K3s to be ready..."
