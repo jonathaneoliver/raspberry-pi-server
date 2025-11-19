@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-script
+  namespace: databases
+data:
+  init.sql: |
+    -- Initialize database with tables for sample applications
+    
+    -- Create users table
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    -- Create posts table
+    CREATE TABLE IF NOT EXISTS posts (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        title VARCHAR(200) NOT NULL,
+        content TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    -- Create sample data
+    INSERT INTO users (username, email) VALUES
+        ('alice', 'alice@example.com'),
+        ('bob', 'bob@example.com'),
+        ('charlie', 'charlie@example.com')
+    ON CONFLICT DO NOTHING;
+    
+    INSERT INTO posts (user_id, title, content) VALUES
+        (1, 'First Post', 'Hello from K3s!'),
+        (2, 'Learning Kubernetes', 'K3s makes it easy.'),
+        (3, 'Raspberry Pi Cluster', 'Building my homelab.')
+    ON CONFLICT DO NOTHING;
+    
+    -- Create indexes
+    CREATE INDEX IF NOT EXISTS idx_posts_user_id ON posts(user_id);
+    CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at);
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: databases
+type: Opaque
+stringData:
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: changeme_secure_password
+  POSTGRES_DB: appdb
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-secret
+  namespace: databases
+type: Opaque
+stringData:
+  REDIS_PASSWORD: changeme_redis_password
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: apps
+data:
+  NODE_ENV: production
+  DATABASE_HOST: postgres.databases.svc.cluster.local
+  REDIS_HOST: redis.databases.svc.cluster.local

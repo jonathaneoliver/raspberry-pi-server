@@ -1,0 +1,22 @@
+http:
+  routers:
+    router-default:
+      rule: "HostRegexp(`{host:.+}`)"
+      service: "noop@internal"
+      priority: 1
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
+    
+    security-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000

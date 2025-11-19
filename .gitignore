@@ -1,0 +1,49 @@
+# Environment files
+.env
+*.env
+!.env.example
+
+# Docker
+docker-compose.override.yml
+
+# Traefik
+acme.json
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+.venv
+
+# Kubernetes
+kubeconfig
+
+# Backup files
+*.backup
+*.bak
+
+# Ruff cache
+.ruff_cache/
