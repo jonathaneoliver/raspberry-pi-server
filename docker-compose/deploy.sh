@@ -51,13 +51,13 @@ fi
 echo "✅ Prerequisites check passed"
 echo ""
 
-# Pull latest images
+# Pull latest images (only external images, not custom builds)
 echo "📥 Pulling latest images..."
-docker compose pull
+docker compose pull traefik portainer postgres redis watchtower || echo "⚠️  Some images couldn't be pulled, continuing..."
 
 echo ""
 echo "🏗️  Building custom images..."
-docker compose build
+docker compose build --no-cache
 
 echo ""
 echo "🚀 Starting services..."
