@@ -63,6 +63,26 @@ stringData:
   REDIS_PASSWORD: changeme_redis_password
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: apps
+type: Opaque
+stringData:
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: changeme_secure_password
+  POSTGRES_DB: appdb
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-secret
+  namespace: apps
+type: Opaque
+stringData:
+  REDIS_PASSWORD: changeme_redis_password
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
