@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  app-network:
+    external: true
